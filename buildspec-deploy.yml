@@ -1,0 +1,18 @@
+deploy:
+  sh:
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - BUILD_DIR="${CODEBUILD_SRC_DIR}/dist"
+      - APPZIP_DIR="${CODEBUILD_SRC_DIR_builtzip}/dist"
+      - APPZIP_NAME="app.zip"
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - BUILD_TAG=${COMMIT_HASH:=latest}
+      - chmod +x deploy.sh
+      - ./deploy.sh
+artifacts:
+  files:
+    - "${BUILD_DIR}/appspec.yml"
+  discard-paths: yes

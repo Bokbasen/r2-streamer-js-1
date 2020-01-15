@@ -1,0 +1,32 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Sample SAM Template for r2-streamer-lambda
+Globals:
+  Api:
+    EndpointConfiguration: REGIONAL
+    BinaryMediaTypes:
+      - "*/*"
+
+Resources:
+  R2StreamerLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: http/server-lambda.handler
+      Runtime: nodejs10.x
+      CodeUri: dist/es8-es2017/src
+      MemorySize: 512
+      Policies: AWSLambdaBasicExecutionRole
+      Timeout: 15
+      Events:
+        R2StreamerLambda:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: any
+
+Outputs:
+  R2StreamerLambdaFunctionApi:
+    Description: "API Gateway endpoint URL for Prod stage for r2-streamer-lambda function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+    Export:
+        Name: R2StreamerLambdaFunctionApi

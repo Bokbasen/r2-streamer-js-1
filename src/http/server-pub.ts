@@ -18,6 +18,7 @@ import { Server } from "./server";
 import { trailingSlashRedirect } from "./server-trailing-slash-redirect";
 
 const debug = debug_("r2:streamer#http/server-pub");
+debug.log = console.info.bind(console);
 
 // tslint:disable-next-line:variable-name
 export const serverPub_PATH = "/pub";

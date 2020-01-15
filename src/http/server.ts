@@ -56,6 +56,7 @@ export interface IServerOptions {
 // this ceiling value seems very arbitrary ... what would be a reasonable default value?
 // ... based on what metric, any particular HTTP server or client implementation?
 export const MAX_PREFETCH_LINKS = 10;
+export const DEFAULT_PORT = 3000;
 
 export class Server {
     public readonly disableReaders: boolean;
@@ -173,15 +174,7 @@ Disallow: /
             return Promise.resolve(this.serverInfo() as ServerData);
         }
 
-        let envPort: number = 0;
-        try {
-            envPort = process.env.PORT ? parseInt(process.env.PORT as string, 10) : 0;
-        } catch (err) {
-            debug(err);
-            envPort = 0;
-        }
-        const p = port || envPort || 3000;
-        debug(`PORT: ${port} || ${envPort} || 3000 => ${p}`);
+        const p = this.getPort(port);
 
         if (secure) {
             this.httpServer = undefined;
@@ -366,6 +359,23 @@ Disallow: /
             this.pathPublicationMap[filePath] = undefined;
             delete this.pathPublicationMap[filePath];
         }
+    }
+
+    public getExpressApp() {
+        return this.expressApp;
+    }
+
+    public getPort(port: number) {
+        let envPort: number = 0;
+        try {
+            envPort = process.env.PORT ? parseInt(process.env.PORT as string, 10) : 0;
+        } catch (err) {
+            debug(err);
+            envPort = 0;
+        }
+        const p = port || envPort || DEFAULT_PORT;
+        debug(`PORT: ${port} || ${envPort} || ${DEFAULT_PORT} => ${p}`);
+        return p;
     }
 
     public uncachePublications() {

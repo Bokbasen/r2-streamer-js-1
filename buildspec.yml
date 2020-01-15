@@ -1,0 +1,16 @@
+version: 0.2
+
+env:
+  variables:
+    BUILD_DIR: "./dist"
+phases:
+  pre_build:
+    commands:
+      - chmod +x build.sh
+  build:
+    commands:
+      - ./build.sh
+      - ls $BUILD_DIR
+artifacts:
+  files:
+    - "${BUILD_DIR}/app.zip"

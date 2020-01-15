@@ -46,7 +46,10 @@
   },
   "homepage": "https://github.com/readium/r2-streamer-js",
   "dependencies": {
+    "@types/aws-serverless-express": "^3.3.2",
     "ajv": "^6.10.2",
+    "aws-lambda": "^1.0.5",
+    "aws-serverless-express": "^3.3.6",
     "css2json": "^1.0.0",
     "debug": "^4.1.1",
     "dot-prop": "^5.2.0",
@@ -197,7 +200,13 @@
     "bundle-sorcery:es8-es2017": "sorcery --input ./dist/bundle-es8-es2017/server-cli_.js --output ./dist/bundle-es8-es2017/server-cli.js && rimraf ./dist/bundle-es8-es2017/server-cli_.js && rimraf ./dist/bundle-es8-es2017/server-cli_.js.map",
     "bundle-uglify:es8-es2017": "cpy ./dist/bundle-es8-es2017/server-cli.js.map ./dist/bundle-es8-es2017/ --rename=server-cli-.js.map && json -I -f ./dist/bundle-es8-es2017/server-cli-.js.map -e \"this.sourcesContent=false\" && terser ./dist/bundle-es8-es2017/server-cli.js --output ./dist/bundle-es8-es2017/server-cli.min.js --xxcompress --xxmangle --keep-classnames --keep-fnames --beautify \"beautify=false,ecma=6,indent_level=0\" --source-map \"root='',url='server-cli.min.js.map',content='./dist/bundle-es8-es2017/server-cli-.js.map'\" && rimraf ./dist/bundle-es8-es2017/server-cli-.js.map",
     "bundle:es8-es2017": "echo \"bundle skip.\"",
-    "bundle:es8-es2017_": "mkdirp ./dist/bundle-es8-es2017 && npm run bundle-browserify:es8-es2017 && npm run bundle-exorcist:es8-es2017 && npm run bundle-sorcery:es8-es2017 && npm run bundle-uglify:es8-es2017"
+    "bundle:es8-es2017_": "mkdirp ./dist/bundle-es8-es2017 && npm run bundle-browserify:es8-es2017 && npm run bundle-exorcist:es8-es2017 && npm run bundle-sorcery:es8-es2017 && npm run bundle-uglify:es8-es2017",
+    "build:lambda": "npm run transpile:typescript:lambda",
+    "transpile:typescript:lambda": "tsc --pretty -p \"./tsconfigs/tsconfig-lambda.json\"",
+    "postbuild:lambda": "npm run afterdist && cp package.json package-lock.json dist && cd dist && npm install --only=production && cp -r node_modules ./es8-es2017/src &&  cd ./es8-es2017/src && zip -qr ../../app.zip ./*",
+    "prebuild:lambda": "npm run clean && npm install && npm run lint",
+    "server-lambda": "node --version && node \"./dist/es8-es2017/src/http/server-lambda.js\"",
+    "server-lambda-local": "cross-env IS_LOCAL=true PORT=8888 npm run server-lambda"
   },
   "importSort": {
     ".ts": {
